@@ -58,10 +58,12 @@ jobs:
           ls -lh vmlinux-6.12-btf.bin
 
       - name: Upload artifacts
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: openwrt-x86-64-kernel-btf
           retention-days: 7
           path: |
             vmlinux-6.12-btf.bin
+            build_dir/target-x86_64_musl/linux-x86_64/linux-*/vmlinux
             bin/targets/x86/64/openwrt-x86-64-generic-kernel.bin
