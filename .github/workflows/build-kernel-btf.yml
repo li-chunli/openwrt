@@ -37,9 +37,14 @@ jobs:
           echo "CONFIG_TARGET_SUBTARGET=\"64\"" >> .config
           make defconfig
 
-      - name: Build kernel only
-        run: |
-          make target/linux/compile -j$(nproc) V=s 2>&1 | tail -50
+      - name: Build host tools
+        run: make tools/install -j$(nproc)
+
+      - name: Build toolchain
+        run: make toolchain/install -j$(nproc)
+
+      - name: Build kernel
+        run: make target/linux/compile -j$(nproc) V=s 2>&1 | tail -50
 
       - name: Extract BTF from vmlinux
         run: |
