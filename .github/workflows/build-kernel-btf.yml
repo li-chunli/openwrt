@@ -52,7 +52,9 @@ jobs:
           echo "vmlinux: $VMLINUX"
           ls -lh "$VMLINUX"
           sudo apt-get install -y linux-tools-common linux-tools-generic || true
-          bpftool btf dump file "$VMLINUX" raw > vmlinux-6.12-btf.bin
+          BPFTOOL=$(find /usr/lib/linux-tools -name bpftool -type f 2>/dev/null | head -1)
+          echo "bpftool: $BPFTOOL"
+          "$BPFTOOL" btf dump file "$VMLINUX" raw > vmlinux-6.12-btf.bin
           ls -lh vmlinux-6.12-btf.bin
 
       - name: Upload artifacts
