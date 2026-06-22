@@ -37,10 +37,22 @@ jobs:
           echo "CONFIG_TARGET_SUBTARGET=\"64\"" >> .config
           make defconfig
 
+      - name: Cache host tools and toolchain
+        uses: actions/cache@v4
+        id: cache-toolchain
+        with:
+          path: |
+            staging_dir/host
+            staging_dir/toolchain-x86_64_gcc-*
+            build_dir/toolchain-x86_64_gcc-*
+          key: openwrt-25.12-x86_64-toolchain-${{ hashFiles('target/linux/x86/config-6.12') }}
+
       - name: Build host tools
+        if: steps.cache-toolchain.outputs.cache-hit != 'true'
         run: make tools/install -j$(nproc)
 
       - name: Build toolchain
+        if: steps.cache-toolchain.outputs.cache-hit != 'true'
         run: make toolchain/install -j$(nproc)
 
       - name: Build kernel
